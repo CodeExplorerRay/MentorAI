@@ -1,0 +1,8 @@
+{
+  "name": "Personalized Learning Mentor",
+  "description": "A multi-agent AI system that builds customized learning paths, adapts using memory, and executes quizzes to master any subject.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}
