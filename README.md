@@ -35,7 +35,15 @@ MentorAI empowers learners by providing structured, adaptive learning plans that
 
 ---
 
-## 3. Core Features & Value
+## 3. Value Proposition
+
+*   **For Learners:** Provides a clear, structured, and adaptive path to mastering new skills, moving beyond static content to offer a truly personalized tutoring experience.
+*   **For Educators:** Offers a scalable model for delivering one-on-one coaching, ensuring every student gets the support they need to succeed.
+*   **For Developers:** Serves as a comprehensive, open-source example of building a complex, stateful multi-agent system with Google's Gemini models.
+
+---
+
+## 4. Core Features
 
 *   **🤖 Multi-Agent System:** Orchestrates five specialized AI agents, each powered by a specific Gemini model, to create a seamless learning journey.
 *   **🧠 Adaptive Curriculum:** Generates a personalized 30-day learning plan based on an initial diagnostic interview, not just self-reported skill levels.
@@ -45,7 +53,7 @@ MentorAI empowers learners by providing structured, adaptive learning plans that
 
 ---
 
-## 4. Architecture & Agent Design
+## 5. Architecture & Agent Design
 
 The application orchestrates **5 Specialized Agents** to guide the user from "Zero to Mastery".
 
@@ -115,7 +123,7 @@ This project leverages the specific strengths of the Gemini model family via the
 
 ---
 
-## 5. Key Concepts Implemented
+## 6. Key Concepts Implemented
 
 This project demonstrates several key concepts from the "Build with Agents" course:
 
@@ -126,7 +134,7 @@ This project demonstrates several key concepts from the "Build with Agents" cour
 
 ---
 
-## 6. Installation & Setup
+## 7. Installation & Setup
 
 ### Prerequisites
 *   **Node.js 18+** installed.
@@ -145,8 +153,9 @@ This project demonstrates several key concepts from the "Build with Agents" cour
     ```
 
 3.  **Configure API Key**
-    Set your API key in your environment variables (or create a `.env` file):
+    Create a `.env.local` file in the root of the project and add your Google AI Studio API key:
     ```bash
+    # .env.local
     API_KEY=your_actual_api_key_here
     ```
 
@@ -154,26 +163,34 @@ This project demonstrates several key concepts from the "Build with Agents" cour
     ```bash
     npm run dev
     ```
-    Open `http://localhost:5173` (or the port shown in your terminal).
+    Open `http://localhost:5173` in your browser. (or the port shown in your terminal)
 
 ### Docker Deployment 🐳
-To build and run the containerized application:
+To build and run the application in a Docker container:
 
 1.  **Build the Image**
     ```bash
-    docker build -t learning-mentor .
+    docker build -t mentor-ai .
     ```
 
 2.  **Run the Container**
-    Pass your API key as an environment variable:
+    Pass your API key as an environment variable and map the port:
     ```bash
-    docker run -p 8080:80 -e API_KEY="your_key_here" learning-mentor
+    docker run -p 8080:5173 -e API_KEY="your_key_here" mentor-ai
     ```
-    Access at `http://localhost:8080`.
+    Access the application at `http://localhost:8080`.
 
 ---
 
-## 7. Future Roadmap
+## 8. Conclusion
+
+MentorAI represents a significant step forward in personalized education. By leveraging a sophisticated multi-agent architecture, it directly addresses the common pitfalls of self-learning—information overload, lack of guidance, and static curricula.
+
+It's more than just a learning tool; it's a blueprint for creating truly adaptive, engaging, and effective educational experiences powered by generative AI. This project not only empowers individual learners but also demonstrates the immense potential of agentic AI to revolutionize how we acquire and master new skills.
+
+---
+
+## 9. Future Roadmap
 
 *   **Real-time Code Execution:** Integrating Pyodide to run Python code directly in the browser instead of just simulating the output.
 *   **RAG Integration:** Adding a Vector Database (e.g., Pinecone) to store long-term conversation history, allowing the agent to reference mistakes made weeks ago.
