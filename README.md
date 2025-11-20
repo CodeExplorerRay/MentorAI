@@ -156,7 +156,7 @@ This project demonstrates several key concepts from the "Build with Agents" cour
     ```
     Open `http://localhost:5173` (or the port shown in your terminal).
 
-### Docker Deployment (Bonus) 🐳
+### Docker Deployment 🐳
 To build and run the containerized application:
 
 1.  **Build the Image**
