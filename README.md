@@ -135,8 +135,8 @@ This project demonstrates several key concepts from the "Build with Agents" cour
 ### Local Development
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/[YOUR_USERNAME]/MentorAI.git
-    cd MentorAI
+    git clone https://github.com/your-username/personalized-learning-mentor.git
+    cd personalized-learning-mentor
     ```
 
 2.  **Install Dependencies**
