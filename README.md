@@ -105,7 +105,7 @@ This project leverages the specific strengths of the Gemini model family via the
 1.  **Clone the repository**
     ```bash
     git clone https://github.com/your-username/MentorAI.git
-    cd personalized-learning-mentor
+    cd MentorAI
     ```
 
 2.  **Install Dependencies**
