@@ -135,11 +135,7 @@ This project demonstrates several key concepts from the "Build with Agents" cour
 ### Local Development
 1.  **Clone the repository**
     ```bash
-<<<<<<< HEAD
-    git clone https://github.com/[YOUR_USERNAME]/MentorAI.git
-=======
     git clone https://github.com/your-username/MentorAI.git
->>>>>>> 245c28a94a8e6c19294b6a413a0fa60776ccb1e6
     cd MentorAI
     ```
 
@@ -160,7 +156,7 @@ This project demonstrates several key concepts from the "Build with Agents" cour
     ```
     Open `http://localhost:5173` (or the port shown in your terminal).
 
-### Docker Deployment (Bonus) 🐳
+### Docker Deployment 🐳
 To build and run the containerized application:
 
 1.  **Build the Image**
