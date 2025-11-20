@@ -104,8 +104,8 @@ This project leverages the specific strengths of the Gemini model family via the
 ### Local Development
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/your-username/personalized-learning-mentor.git
-    cd personalized-learning-mentor
+    git clone https://github.com/your-username/MentorAI.git
+    cd MentorAI
     ```
 
 2.  **Install Dependencies**
@@ -130,7 +130,7 @@ To build and run the containerized application:
 
 1.  **Build the Image**
     ```bash
-    docker build -t learning-mentor .
+    docker build -t MentorAI .
     ```
 
 2.  **Run the Container**
