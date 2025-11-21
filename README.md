@@ -143,8 +143,8 @@ This project demonstrates several key concepts from the "Build with Agents" cour
 ### Local Development
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/your-username/personalized-learning-mentor.git
-    cd personalized-learning-mentor
+    git clone https://github.com/your-username/MentorAI.git
+    cd MentorAI
     ```
 
 2.  **Install Dependencies**
@@ -165,7 +165,7 @@ This project demonstrates several key concepts from the "Build with Agents" cour
     ```
     Open `http://localhost:5173` in your browser. (or the port shown in your terminal)
 
-### Docker Deployment 🐳
+### Docker Deployment (Optional)🐳
 To build and run the application in a Docker container:
 
 1.  **Build the Image**
