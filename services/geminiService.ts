@@ -142,7 +142,7 @@ export const generateLearningPlan = async (goal: string, level: string): Promise
  */
 export const createCoachSession = (topic: string, dayPlan: DayPlan, history: Message[]) => {
   const client = getAI();
-  const model = "gemini-3-pro-preview";
+  const model = "gemini-2.5-flash";
 
   const systemInstruction = COACH_SYSTEM_INSTRUCTION(topic, dayPlan);
 

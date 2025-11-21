@@ -99,12 +99,12 @@ This project leverages the specific strengths of the Gemini model family via the
 *   **Innovation:** Instead of relying on self-assessment (e.g., "I'm intermediate"), it uses **"Gatekeeper Scenarios"**—concrete problems to test actual competence using Bloom's Taxonomy.
 
 ### 🗺️ 2. The Planner Agent ("The Architect")
-*   **Model:** `gemini-1.5-pro`
+*   **Model:** `gemini-1.5-pro-latest`
 *   **Role:** Curriculum Designer.
 *   **Innovation:** Uses a large context window and advanced reasoning to deeply analyze the user's profile, ensuring the 30-day plan is coherent and logically sequenced. It outputs a structured JSON object for the curriculum.
 
 ### 🎓 3. The Coaching Agent ("The Companion")
-*   **Model:** `gemini-1.5-pro`
+*   **Model:** `gemini-1.5-pro-latest`
 *   **Role:** Socratic Tutor.
 *   **Innovation:** Fully **Multimodal**.
     *   **Vision:** Can analyze uploaded screenshots of code errors or handwritten notes.
@@ -112,7 +112,7 @@ This project leverages the specific strengths of the Gemini model family via the
     *   **Grounding:** Connects to **Google Search** for up-to-date documentation.
 
 ### 🎙️ 4. The Voice Agent ("The Conversationalist")
-*   **Model:** `gemini-1.5-pro`
+*   **Model:** `gemini-1.5-pro-latest`
 *   **Role:** Verbal Tutor.
 *   **Innovation:** Connects directly to the Gemini API via WebSockets. It handles raw PCM audio encoding/decoding in the browser for low-latency, interruptible voice conversations.
 

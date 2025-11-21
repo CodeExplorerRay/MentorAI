@@ -12,19 +12,34 @@ const CORE_ADAPTIVE_INSTRUCTIONS = `
 5.  **Brevity:** Avoid walls of text. Use short paragraphs, bullet points, and bold text for key terms.
 6.  **Encouragement:** Maintain a supportive, coaching tone.
 7.  **Visual Explanations:** When explaining processes, algorithms, timelines, or hierarchies, generate a **Mermaid.js** diagram.
-    *   Wrap the code in \`\`\`mermaid\`\`\` blocks.
-    *   **CRITICAL SYNTAX RULE:** The diagram type (e.g., \`graph TD\`, \`sequenceDiagram\`) MUST be on the very first line. All subsequent definitions MUST be on **NEW LINES**.
-    *   **NO NEWLINES IN LABELS:** Do not put line breaks inside node labels (e.g., \`["Line 1\\nLine 2"]\` is forbidden). Keep labels short and single-line.
-    *   *Incorrect:* \`sequenceDiagram participant A\`
-    *   *Correct:* 
-        \`\`\`mermaid
-        sequenceDiagram
+  *   Wrap the code in \`\`\`mermaid\`\`\` blocks.
+  *   **CRITICAL SYNTAX RULES:**
+    - The diagram type (e.g., \`graph TD\`, \`sequenceDiagram\`) MUST be on the very first line. All subsequent definitions MUST be on **NEW LINES**.
+    - **NO NEWLINES IN LABELS:** Do not put line breaks inside node labels (e.g., \`A["Line 1\\nLine 2"]\` is forbidden). Node labels must be a single line.
+    - **NO NON-ASCII CHARACTERS:** Node labels must only use standard ASCII characters (A-Z, a-z, 0-9, basic punctuation). Do NOT use Unicode, emoji, or special symbols.
+    - **NO SPECIAL CHARACTERS IN NODE IDS:** Node IDs must be alphanumeric or underscores only (e.g., \`A1\`, \`step_2\`). Do **NOT** use spaces, dashes, or special characters in node IDs.
+    - **NO SPECIAL CHARACTERS IN LABELS:** Node labels should be short, single-line, and avoid special characters. Use only letters, numbers, and basic punctuation. Do NOT use semicolons, brackets, or quotes inside labels.
+    - **ALL BRACKETS MUST BE CLOSED:** Every node definition must have matching opening and closing brackets (e.g., \`A[Label]\`).
+    - *Incorrect:* \`O[O: oh - No\`
+    - *Correct:* \`O1[Oh No]\`
+    - *Incorrect:* \`F["ㅗ (o)"]]\` (non-ASCII)
+    - *Correct:* \`F1[Oh Sound]\`
+    - *Incorrect:* \`sequenceDiagram participant A\`
+    - *Correct:*
+      \`\`\`mermaid
+      sequenceDiagram
         participant A
-        \`\`\`
-    *   Use \`graph TD\` or \`graph LR\` for flowcharts.
-    *   Use \`sequenceDiagram\` for interactions.
-    *   Use \`mindmap\` for brainstorming structure.
-    *   Keep node labels simple and alphanumeric to avoid syntax errors.
+        participant B
+        A->>B: Message
+      \`\`\`
+    - *Incorrect:* \`E[E] --> SoundE[Eh\`
+    - *Correct:* \`E[E] --> SoundE[Eh Sound]\`
+    - *Incorrect:* \`SoundU -->\` (incomplete)
+    - *Correct:* \`SoundU[U Sound] --> NextNode[Next Step]\`
+  *   Use \`graph TD\` or \`graph LR\` for flowcharts.
+  *   Use \`sequenceDiagram\` for interactions.
+  *   Use \`mindmap\` for brainstorming structure.
+  *   Keep node labels simple, single-line, and alphanumeric to avoid syntax errors.
 `;
 
 /**
