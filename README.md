@@ -57,37 +57,9 @@ MentorAI empowers learners by providing structured, adaptive learning plans that
 
 The application orchestrates **5 Specialized Agents** to guide the user from "Zero to Mastery".
 
-```mermaid
-graph TD
-    User([User]) -->|Goal: 'Learn React'| Diagnostic[Diagnostic Agent<br/>gemini-1.5-flash]
-    
-    subgraph Onboarding
-        Diagnostic <-->|Adaptive Interview| User
-        Diagnostic -->|Output| Profile{Learner Profile<br/>JSON}
-    end
-    
-    Profile --> Planner[Planner Agent<br/>gemini-1.5-pro]
-    Planner -->|Thinking Mode 32k| Plan[30-Day Curriculum<br/>JSON]
-    Plan --> DB[(Local Storage)]
-    
-    subgraph Daily Learning Loop
-        DB --> Dashboard[Dashboard UI]
-        Dashboard -->|Start Day| Coach[Coaching Agent<br/>gemini-1.5-pro]
-        
-        Coach <-->|Chat & Vision| User
-        
-        subgraph Tools & Modalities
-            Coach -.->|Voice Mode| Live[Voice Agent<br/>gemini-1.5-pro]
-            Coach -.->|Grounding| Search[Google Search]
-            Coach -.->|Visuals| Hybrid[Hybrid Diagram<br/>Mermaid + React Flow]
-        end
-        
-        User -->|Finish Session| Quiz[Quiz Agent<br/>gemini-1.5-flash]
-        Quiz -->|Generate Questions| User
-        User -->|Submit Answers| Feedback[Feedback Agent<br/>gemini-1.5-flash]
-        Feedback -->|Update Stats| DB
-    end
-```
+<p align="center">
+  <img src="workflow.svg" alt="Workflow" />
+</p>
 
 ---
 
