@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { DayPlan, Message, QuizQuestion } from '../types';
 import { ArrowLeft, Send, Sparkles, Code, PlayCircle, HelpCircle, CheckCircle, XCircle, User, Globe, BrainCircuit, Loader2, Terminal, Lightbulb, BookOpen, Mic, Paperclip, X, Image as ImageIcon, RefreshCw } from 'lucide-react';
 import { createCoachSession, generateQuiz, generateFeedback, searchWeb, askThinking } from '../services/geminiService';
-import { LiveVoiceSession } from './LiveVoiceSession';
-import { MermaidDiagram } from './MermaidDiagram';
+import { LiveVoiceSession } from './LiveVoiceSession'; // Assuming this component exists
+import { HybridDiagram } from './HybridDiagram'; // Corrected import
 import { usePyodide } from '../hooks/usePyodide';
 import ReactMarkdown from 'react-markdown';
 
@@ -263,7 +263,7 @@ export const Session: React.FC<SessionProps> = ({ plan, topic, onBack, onComplet
                                 const execState = executionResults[blockId];
 
                                 if (!inline && isMermaid) {
-                                    return <MermaidDiagram chart={codeContent} />;
+                                    return <HybridDiagram chart={codeContent} />; // Corrected component usage
                                 }
 
                                 return !inline && match ? (

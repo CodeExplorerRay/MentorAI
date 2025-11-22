@@ -1,4 +1,3 @@
-
 /**
  * SHARED ADAPTIVE BEHAVIOR
  * These rules apply to all agents to ensure the "Personalized Learning Mentor" persona.
@@ -15,8 +14,27 @@ const CORE_ADAPTIVE_INSTRUCTIONS = `
   *   Wrap the code in \`\`\`mermaid\`\`\` blocks.
   *   **CRITICAL SYNTAX RULES:**
     - The diagram type (e.g., \`graph TD\`, \`sequenceDiagram\`) MUST be on the very first line. All subsequent definitions MUST be on **NEW LINES**.
-    - **NO NEWLINES IN LABELS:** Do not put line breaks inside node labels (e.g., \`A["Line 1\\nLine 2"]\` is forbidden). Node labels must be a single line.
+    - **ONE NODE PER LINE:** Each node must be on its own line. Never concatenate nodes like \`A[Label]B[Label]\`.
+    - **ARROW COMPLETION CRITICAL:** Every arrow must connect two complete nodes. Never leave arrows incomplete.
+      - ❌ WRONG: \`A[Component] -->\` (missing target)
+      - ❌ WRONG: \`--> B[Component]\` (missing source)  
+      - ❌ WRONG: \`A[Component]B --> |No| C[Component]\` (concatenated + arrow)
+      - ✅ RIGHT: \`A[Component] --> B[Component]\`
+    - **NODE SEPARATION CRITICAL:** Always separate nodes from arrows with proper line breaks.
+      - ❌ WRONG: \`A[Component]B --> |No| C[Component]\` 
+      - ✅ RIGHT: 
+        \`\`\`mermaid
+        graph TD
+            A[Component]
+            B[Component]
+            A --> |No| B
+        \`\`\`
+    - **NO NEWLINES IN LABELS:** Do not put line breaks inside node labels (e.g., \`["Line 1\\nLine 2"]\` is forbidden). Node labels must be a single line.
     - **NO NON-ASCII CHARACTERS:** Node labels must only use standard ASCII characters (A-Z, a-z, 0-9, basic punctuation). Do NOT use Unicode, emoji, or special symbols.
+    - **NO MARKDOWN FORMATTING:** Do not use \`**bold**\`, \`*italic*\`, or \`_underline_\` syntax in labels.
+    - **SPECIAL CHARACTERS IN LABELS:** If labels contain parentheses, commas, or other special characters, wrap them in quotes:
+      - *Incorrect:* \`B[React (e.g., Babel)]\`
+      - *Correct:* \`B["React (e.g., Babel)"]\`
     - **NO SPECIAL CHARACTERS IN NODE IDS:** Node IDs must be alphanumeric or underscores only (e.g., \`A1\`, \`step_2\`). Do **NOT** use spaces, dashes, or special characters in node IDs.
     - **NO SPECIAL CHARACTERS IN LABELS:** Node labels should be short, single-line, and avoid special characters. Use only letters, numbers, and basic punctuation. Do NOT use semicolons, brackets, or quotes inside labels.
     - **ALL BRACKETS MUST BE CLOSED:** Every node definition must have matching opening and closing brackets (e.g., \`A[Label]\`).
@@ -36,10 +54,33 @@ const CORE_ADAPTIVE_INSTRUCTIONS = `
     - *Correct:* \`E[E] --> SoundE[Eh Sound]\`
     - *Incorrect:* \`SoundU -->\` (incomplete)
     - *Correct:* \`SoundU[U Sound] --> NextNode[Next Step]\`
+    - *Incorrect:* \`A[**Bold**]B[Label]\` (markdown + concatenated)
+    - *Correct:* 
+      \`\`\`mermaid
+      graph TD
+          A[Bold]
+          A --> B[Label]
+      \`\`\`
+    - *Incorrect:* \`App[Component]App -->\` (concatenated + incomplete arrow)
+    - *Correct:* 
+      \`\`\`mermaid
+      graph TD
+          App[Component]
+          Next[Next Component]
+          App --> Next
+      \`\`\`
   *   Use \`graph TD\` or \`graph LR\` for flowcharts.
   *   Use \`sequenceDiagram\` for interactions.
   *   Use \`mindmap\` for brainstorming structure.
   *   Keep node labels simple, single-line, and alphanumeric to avoid syntax errors.
+  
+  *   **SAFE DIAGRAM TEMPLATE:**
+      \`\`\`mermaid
+      graph TD
+          Start[Start] --> Step1[Step One]
+          Step1 --> Step2[Step Two] 
+          Step2 --> End[End]
+      \`\`\`
 `;
 
 /**

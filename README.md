@@ -79,7 +79,7 @@ graph TD
         subgraph Tools & Modalities
             Coach -.->|Voice Mode| Live[Voice Agent<br/>gemini-1.5-pro]
             Coach -.->|Grounding| Search[Google Search]
-            Coach -.->|Visuals| Mermaid[Mermaid Diagram Generator]
+            Coach -.->|Visuals| Hybrid[Hybrid Diagram<br/>Mermaid + React Flow]
         end
         
         User -->|Finish Session| Quiz[Quiz Agent<br/>gemini-1.5-flash]
@@ -108,7 +108,7 @@ This project leverages the specific strengths of the Gemini model family via the
 *   **Role:** Socratic Tutor.
 *   **Innovation:** Fully **Multimodal**.
     *   **Vision:** Can analyze uploaded screenshots of code errors or handwritten notes.
-    *   **Visuals:** Generates code blocks that render into dynamic **Mermaid.js** flowcharts.
+    *   **Visuals:** Generates diagrams using a **Hybrid Renderer** that attempts Mermaid.js first and falls back to **React Flow** for syntax errors.
     *   **Grounding:** Connects to **Google Search** for up-to-date documentation.
 
 ### 🎙️ 4. The Voice Agent ("The Conversationalist")
@@ -130,7 +130,7 @@ This project demonstrates several key concepts from the "Build with Agents" cour
 1.  **🤖 Agentic Mindset & Task Decomposition:** The problem of personalized learning is broken down into specialized tasks, each handled by a dedicated agent (Diagnostic, Planner, Coach, etc.).
 2.  **⛓️ Chaining & Orchestration:** The agents work in a logical sequence. The output of the Diagnostic Agent (Learner Profile) is chained as the input for the Planner Agent, which then creates the curriculum used by the Coaching Agent.
 3.  **🛠️ Function Calling / Tools:** The Coaching Agent is equipped with tools like Google Search (for grounding) and a Mermaid Diagram Generator (for visual explanations), enhancing its capabilities beyond simple text generation.
-4.  **🔮 Multimodality:** The Coaching and Voice agents showcase multimodal interactions, accepting user input via text, images (vision), and audio.
+4.  **🔮 Multimodality:** The Coaching and Voice agents showcase multimodal interactions, accepting user input via text, images (vision), and audio, and providing visual output via diagrams.
 
 ---
 

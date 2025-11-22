@@ -4,7 +4,7 @@ import mermaid from 'mermaid';
 import { ReactFlowDiagram } from './ReactFlowDiagram';
 
 mermaid.initialize({
-  startOnLoad: false, // Explicitly disable auto-rendering on load
+  startOnLoad: false,
   theme: 'default',
   securityLevel: 'loose',
 });
@@ -25,7 +25,7 @@ export const HybridDiagram: React.FC<HybridDiagramProps> = ({ chart }) => {
   }, [chart]);
 
   const renderWithFallbacks = async (rawCode: string) => {
-    // Clean the code first (simple cleanup, no validator)
+    // Clean the code first
     const cleanCode = cleanMermaidCode(rawCode);
     
     // TRY 1: Mermaid
@@ -63,13 +63,13 @@ export const HybridDiagram: React.FC<HybridDiagramProps> = ({ chart }) => {
 // Simple cleaner - no validator messages
 const cleanMermaidCode = (code: string): string => {
   return code
-    .replace(/([A-Za-z0-9_]+\[[^\]]+\])([A-Za-z0-9_]+\[)/g, '$1\n$2')
-    .replace(/(\])\s*-->\s*$/gm, '$1 --> TempNode[Continue]')
-    .replace(/^\s*-->\s*([A-Za-z0-9_]+\[)/gm, 'StartNode[Start] --> $1')
-    .replace(/\*\*/g, '')
-    .replace(/[()<>]/g, '')
-    .replace(/"/g, '')
-    .trim();
+      .replace(/([A-Za-z0-9_]+\[[^\]]+\])([A-Za-z0-9_]+\[)/g, '$1\n$2')
+      .replace(/(\])\s*-->\s*$/gm, '$1 --> TempNode[Continue]')
+      .replace(/^\s*-->\s*([A-Za-z0-9_]+\[)/gm, 'StartNode[Start] --> $1')
+      .replace(/\*\*/g, '')
+      .replace(/[()<>]/g, '')
+      .replace(/"/g, '')
+      .trim();
 };
 
 // Simple converter - no complex logic
