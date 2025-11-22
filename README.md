@@ -158,8 +158,13 @@ This project demonstrates several key concepts from the "Build with Agents" cour
     # .env.local
     API_KEY=your_actual_api_key_here
     ```
+    Alternatively, you can set the environment variable directly in your terminal (PowerShell on Windows):
+    ```bash
+    $env:API_KEY="your_actual_api_key_here"
+    npm run dev
+    ```
 
-4.  **Run the App**
+5.  **Run the App**
     ```bash
     npm run dev
     ```
