@@ -19,7 +19,7 @@ const AppContent: React.FC = () => {
   const [apiKeyMissing, setApiKeyMissing] = useState(false);
 
   useEffect(() => {
-    if (!process.env.REACT_APP_API_KEY) {
+    if (!process.env.VITE_API_KEY) {
         setApiKeyMissing(true);
     }
   }, []);
