@@ -4,10 +4,14 @@ import { AppView, UserProfile, LearningPlan, DayPlan, Badge } from './types';
 import { Diagnostic } from './components/Diagnostic';
 import { Dashboard } from './components/Dashboard';
 import { Session } from './components/Session';
+import { Auth } from './components/Auth';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { generateLearningPlan } from './services/geminiService';
-import { BrainCircuit, Loader2 } from 'lucide-react';
+import { DatabaseService } from './services/dbService';
+import { BrainCircuit, Loader2, LogOut } from 'lucide-react';
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { user, loading: authLoading, signOut } = useAuth();
   const [view, setView] = useState<AppView>(AppView.ONBOARDING);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [plan, setPlan] = useState<LearningPlan | null>(null);
@@ -15,61 +19,61 @@ const App: React.FC = () => {
   const [apiKeyMissing, setApiKeyMissing] = useState(false);
 
   useEffect(() => {
-    // Check for API key in environment (frontend env vars)
     if (!process.env.API_KEY) {
         setApiKeyMissing(true);
     }
-    
-    // Load from local storage safely
-    try {
-        const savedProfile = localStorage.getItem('plm_profile');
-        const savedPlan = localStorage.getItem('plm_plan');
-
-        if (savedProfile && savedPlan) {
-            const parsedProfile = JSON.parse(savedProfile);
-            // Migrate old profiles that don't have stats
-            if (!parsedProfile.stats) {
-                parsedProfile.stats = { streak: 0, totalPoints: 0, lastActivityDate: null, badges: [] };
-            }
-            setProfile(parsedProfile);
-            setPlan(JSON.parse(savedPlan));
-            setView(AppView.DASHBOARD);
-        } else {
-            setView(AppView.ONBOARDING);
-        }
-    } catch (e) {
-        console.error("Failed to load progress", e);
-        setView(AppView.ONBOARDING);
-    }
   }, []);
 
-  // Helper to persist state reliably
-  const persistState = (key: string, data: any) => {
+  useEffect(() => {
+    if (!user) return;
+
+    const loadUserData = async () => {
       try {
-          localStorage.setItem(key, JSON.stringify(data));
+        const userProfile = await DatabaseService.getUserProfile(user.id);
+        const userPlan = await DatabaseService.getLearningPlan(user.id);
+
+        if (userProfile && userPlan) {
+          setProfile(userProfile);
+          setPlan(userPlan);
+          setView(AppView.DASHBOARD);
+        } else {
+          setView(AppView.ONBOARDING);
+        }
       } catch (e) {
-          console.error(`Failed to save ${key}`, e);
-          alert("Warning: Could not save progress to local storage. Check your browser settings.");
+        console.error('Failed to load user data', e);
+        setView(AppView.ONBOARDING);
       }
-  }
-
-  const handleDiagnosticComplete = async (newProfile: UserProfile) => {
-    setProfile(newProfile);
-    persistState('plm_profile', newProfile);
-    setView(AppView.LOADING_PLAN);
-
-    // Call Planner Agent
-    const schedule = await generateLearningPlan(newProfile.goal, newProfile.level);
-    const newPlan: LearningPlan = {
-      id: crypto.randomUUID(),
-      topic: newProfile.goal,
-      createdAt: Date.now(),
-      schedule
     };
 
-    setPlan(newPlan);
-    persistState('plm_plan', newPlan);
-    setView(AppView.DASHBOARD);
+    loadUserData();
+  }, [user]);
+
+
+  const handleDiagnosticComplete = async (newProfile: UserProfile) => {
+    if (!user) return;
+
+    setProfile(newProfile);
+    setView(AppView.LOADING_PLAN);
+
+    try {
+      await DatabaseService.createOrUpdateUser(user.id, user.email!, newProfile.name);
+
+      const schedule = await generateLearningPlan(newProfile.goal, newProfile.level);
+      const planId = await DatabaseService.saveLearningPlan(user.id, newProfile, schedule);
+
+      const newPlan: LearningPlan = {
+        id: planId,
+        topic: newProfile.goal,
+        createdAt: Date.now(),
+        schedule
+      };
+
+      setPlan(newPlan);
+      setView(AppView.DASHBOARD);
+    } catch (e) {
+      console.error('Failed to save plan', e);
+      alert('Failed to save learning plan. Please try again.');
+    }
   };
 
   const handleStartDay = (day: DayPlan) => {
@@ -77,23 +81,33 @@ const App: React.FC = () => {
     setView(AppView.SESSION);
   };
 
-  const handleSessionComplete = (score: number) => {
-    if (!plan || !currentDay || !profile) return;
+  const handleSessionComplete = async (score: number) => {
+    if (!plan || !currentDay || !profile || !user) return;
 
-    // 1. Update Plan Status
-    const updatedSchedule = plan.schedule.map(d => {
-      if (d.day === currentDay.day) {
-        return { ...d, status: 'completed' as const, quizScore: score };
-      }
-      if (d.day === currentDay.day + 1) {
-        return { ...d, status: 'active' as const };
-      }
-      return d;
-    });
+    try {
+      await DatabaseService.updateDayPlan(plan.id, currentDay.day, {
+        status: 'completed',
+        quizScore: score
+      });
 
-    const updatedPlan = { ...plan, schedule: updatedSchedule };
-    setPlan(updatedPlan);
-    persistState('plm_plan', updatedPlan);
+      if (currentDay.day < plan.schedule.length) {
+        await DatabaseService.updateDayPlan(plan.id, currentDay.day + 1, {
+          status: 'active'
+        });
+      }
+
+      const updatedSchedule = plan.schedule.map(d => {
+        if (d.day === currentDay.day) {
+          return { ...d, status: 'completed' as const, quizScore: score };
+        }
+        if (d.day === currentDay.day + 1) {
+          return { ...d, status: 'active' as const };
+        }
+        return d;
+      });
+
+      const updatedPlan = { ...plan, schedule: updatedSchedule };
+      setPlan(updatedPlan);
 
     // 2. Gamification Logic (Points & Streak)
     const today = new Date().toISOString().split('T')[0];
@@ -140,34 +154,58 @@ const App: React.FC = () => {
 
     newStats.badges = badges;
 
-    // Update Profile State
-    const updatedProfile = { ...profile, stats: newStats };
-    setProfile(updatedProfile);
-    persistState('plm_profile', updatedProfile);
-    
-    // Navigate back
-    setView(AppView.DASHBOARD);
-    setCurrentDay(null);
+      await DatabaseService.updateUserStats(user.id, {
+        streak: newStats.streak,
+        totalPoints: newStats.totalPoints,
+        lastActivityDate: newStats.lastActivityDate
+      });
+
+      for (const badge of badges) {
+        if (!profile.stats.badges.find(b => b.id === badge.id)) {
+          await DatabaseService.addBadge(user.id, badge);
+        }
+      }
+
+      const updatedProfile = { ...profile, stats: newStats };
+      setProfile(updatedProfile);
+
+      setView(AppView.DASHBOARD);
+      setCurrentDay(null);
+    } catch (e) {
+      console.error('Failed to update progress', e);
+    }
   };
 
-  const handleReset = () => {
-      if (window.confirm("Are you sure you want to reset all progress? This cannot be undone.")) {
-        localStorage.clear();
-        setProfile(null);
-        setPlan(null);
-        setView(AppView.ONBOARDING);
-      }
+  const handleReset = async () => {
+    if (window.confirm("Are you sure you want to sign out?")) {
+      await signOut();
+      setProfile(null);
+      setPlan(null);
+      setView(AppView.ONBOARDING);
+    }
   };
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-slate-50">
+        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Auth />;
+  }
 
   if (apiKeyMissing) {
-      return (
-          <div className="flex items-center justify-center h-screen bg-slate-50 text-slate-800 p-4 text-center">
-              <div>
-                  <h1 className="text-2xl font-bold mb-2 text-red-600">Configuration Error</h1>
-                  <p>The <code>process.env.API_KEY</code> is missing. This app requires a Google Gemini API key to function.</p>
-              </div>
-          </div>
-      )
+    return (
+      <div className="flex items-center justify-center h-screen bg-slate-50 text-slate-800 p-4 text-center">
+        <div>
+          <h1 className="text-2xl font-bold mb-2 text-red-600">Configuration Error</h1>
+          <p>The <code>process.env.API_KEY</code> is missing. This app requires a Google Gemini API key to function.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -181,8 +219,9 @@ const App: React.FC = () => {
                     <span className="font-bold text-xl tracking-tight">MentorAI</span>
                 </div>
                 {view === AppView.DASHBOARD && (
-                    <button onClick={handleReset} className="text-sm text-slate-400 hover:text-red-500 transition-colors">
-                        Reset Progress
+                    <button onClick={handleReset} className="text-sm text-slate-600 hover:text-slate-900 transition-colors flex items-center gap-2">
+                        <LogOut size={16} />
+                        Sign Out
                     </button>
                 )}
             </div>
@@ -234,6 +273,14 @@ const App: React.FC = () => {
         )}
       </main>
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 
